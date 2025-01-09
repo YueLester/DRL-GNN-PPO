@@ -144,6 +144,7 @@ class Env1(gym.Env):
         random.seed(seed)
         np.random.seed(seed)
 
+## gwo 替换。
     def num_shortest_path(self, topology):
         self.diameter = nx.diameter(self.graph)
 

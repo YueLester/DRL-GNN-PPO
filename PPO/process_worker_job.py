@@ -133,6 +133,7 @@ class PPOActorCritic:
             }
         )        
 
+        # 策略梯度计算
         r = self.actor(tensors['link_state'], tensors['graph_id'], tensors['first'],
                 tensors['second'], tensors['num_edges'], training=False)
 
