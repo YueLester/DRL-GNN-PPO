@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="DRL-GNN-PPO" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="DRL-GNN-PPO" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.7 (learning)" project-jdk-type="Python SDK" />
 </project>

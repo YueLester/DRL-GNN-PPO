@@ -1,75 +1,59 @@
 import random
 
-from matplotlib import pyplot as plt
+import numpy as np
+import matplotlib.pyplot as plt
 
-# 示例数据
-x = [10, 25, 40, 55, 70, 85]  # x轴的数据点
-y1 = [9, 20, 27, 30, 32, 33]
-y2 = [5, 13, 20, 22, 25, 23]
-y3 = [5, 12, 16, 18, 20, 20]
+def calculate_moving_average(data, window_size):
+    """Calculate moving average with the specified window size"""
+    weights = np.ones(window_size) / window_size
+    return np.convolve(data, weights, mode='valid')
 
-# 10s, 15s
-# 3, 6s
-k1 = []
-k2 = []
-k3 = []
-# k1 = [0.8222, 0.918, 0.9344, 0.9262, 0.9371, 0.9353]  # 线1的纵坐标
-# k2 = [0.8988, 0.9334, 0.9435, 0.9407, 0.9453, 0.9453]  # 线2的纵坐标
-# k3 = [0.8988, 0.9334, 0.9435, 0.9407, 0.9453, 0.9453]  # 线3的纵坐标
-for xx, yy in zip(x, y1):
-    totalAge = 0
-    totalSize = 0
-    for i in range(yy):
-        r = random.randint(128, 512)
-        totalSize += r
-        y = random.randint(3, 6)
-        totalAge += r * y
+epochs=1000
+window_size=50
+try:
+    np.random.seed(42)
+    rewards = []
+    base_reward = 20  # Higher starting reward
+    convergence_point = 850  # Later convergence point
 
-    for i in range(xx-yy):
-        r = random.randint(128, 512)
-        totalSize += r
-        y = random.randint(10, 15)
-        totalAge += r * y
-    temp = 1.0 * totalAge / totalSize
-    k1.append(temp)
-for xx, yy in zip(x, y2):
-    totalAge = 0
-    totalSize = 0
-    for i in range(yy):
-        r = random.randint(128, 512)
-        totalSize += r
-        y = random.randint(3, 6)
-        totalAge += r * y
+    # Generate rewards for each epoch
+    for i in range(epochs):
+        progress = i / convergence_point if i < convergence_point else 1
 
-    for i in range(xx - yy):
-        r = random.randint(128, 512)
-        totalSize += r
-        y = random.randint(10, 15)
-        totalAge += r * y
-    temp = 1.0 * totalAge / totalSize
-    k2.append(temp)
-for xx, yy in zip(x, y3):
-    totalAge = 0
-    totalSize = 0
-    for i in range(yy):
-        r = random.randint(128, 512)
-        totalSize += r
-        y = random.randint(3, 6)
-        totalAge += r * y
+        if i < convergence_point:
+            # Pre-convergence: larger noise and learning rate
+            noise_scale = 0.4 * (1 - progress ** 0.5)
+            learning_rate = 0.015 * (1 - progress ** 0.3)
+        else:
+            # Post-convergence: maintain moderate fluctuation
+            noise_scale = 0.15
+            learning_rate = 0.005
 
-    for i in range(xx - yy):
-        r = random.randint(128, 512)
-        totalSize += r
-        y = random.randint(10, 15)
-        totalAge += r * y
-    temp = 1.0 * totalAge / totalSize
-    k3.append(temp)
+        # Add periodic noise
+        periodic_noise = np.sin(i * 0.1) * 5 * noise_scale
 
+        # Generate random noise
+        random_noise = noise_scale * (np.random.random() - 0.5) * 60
 
+        # Target value with fluctuation after convergence
+        if i < convergence_point:
+            target = 100  # Higher target value
+        else:
+            target = 100 + np.random.normal(0, 3)
 
-plt.plot(x, k1, 's-', color='r', label="proposal")  # s-:方形
-plt.plot(x, k2, 'o-', color='g', label="greedy")  # o-:圆形
-plt.plot(x, k3, '^-', color='b', label="random")  # o-:圆形
+        # Update base reward
+        base_reward = base_reward + learning_rate * (target - base_reward)
+
+        # Combine all noise and clip to valid range
+        reward = np.clip(base_reward + random_noise + periodic_noise, 0, 120)
+        rewards.append(reward)
+
+    # Calculate moving average
+    moving_avg = calculate_moving_average(rewards, window_size)
+plt.figure(figsize=(15, 8))
+
+plt.plot(range(window_size - 1, epochs), moving_avg, 'r-',
+         label='reward', linewidth=2)
 
 
 plt.xlabel("flowNum")  # ratio

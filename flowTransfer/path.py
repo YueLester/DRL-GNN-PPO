@@ -1,14 +1,14 @@
 import net
 
 
-distances = [10, 50, 100, 200, 500]
+# distances = [100, 130, 150, 160, 180]
 
 def getM(distances):
     wireless = net.WirelessMetrics(frequency_ghz=2.4, tx_power_dbm=20, antenna_gain_db=2)
 
     # 测试不同距离的性能指标
-    print("距离(m) | 能耗(mW) | 延迟(ms) | 带宽(Mbps) | 丢包率(%)")
-    print("-" * 60)
+    # print("距离(m) | 能耗(mW) | 延迟(ms) | 带宽(Mbps) | 丢包率(%)")
+    # print("-" * 60)
     cost = []
     delaySet = []
     band = []
@@ -25,9 +25,12 @@ def getM(distances):
         band.append(bandwidth)
         ratio.append(packet_loss)
 
-        print(f"{distance:7.1f} | {power:8.2f} | {delay:8.3f} | {bandwidth:9.2f} | {packet_loss:9.2f}")
-
+        # print(f"{distance:7.1f} | {power:8.2f} | {delay:8.3f} | {bandwidth:9.2f} | {packet_loss:9.2f}")
+    for j in range(len(cost)):
+        for i in range(12):
+            cost[j] = 1.0 * cost[j] / 10
+        cost[j] *= 2
     return cost, delaySet, band, ratio
 
-a,b,c,d = getM(distances)
-print(a,b,c,d)
+# a,b,c,d = getM(distances)
+# print(a,b,c,d)
