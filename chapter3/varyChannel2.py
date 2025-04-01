@@ -16,6 +16,10 @@ import matplotlib.patches as mpatches
 # 设置支持中文的字体
 plt.rcParams['font.sans-serif'] = ['SimHei']  # 使用黑体
 plt.rcParams['axes.unicode_minus'] = False   # 解决负号 '-' 显示为方块的问题
+plt.rcParams['font.sans-serif'] = ['SimHei']  # 使用黑体
+plt.rcParams['axes.unicode_minus'] = False   # 解决负号 '-' 显示为方块的问题
+plt.rcParams['font.family'] = 'SimHei'
+plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 
 # 设置随机种子以确保结果可重现
 np.random.seed(63)
